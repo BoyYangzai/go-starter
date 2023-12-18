@@ -22,11 +22,10 @@ type User struct {
 	Extra           string    `gorm:"type:varchar(255);not null" json:"extra"`
 }
 
-var user User
-var AuthUser User
-
 func UpdateVerifyCode(email string, code string) {
 	db := database.Db
+	user := User{}
+
 	result := db.Where("email = ?", email).First(&user)
 	if result.Error == gorm.ErrRecordNotFound {
 		// 表示未找到匹配的记录
@@ -60,6 +59,7 @@ func UpdOneKeyWhereAnoKey(whereKey string, whereKeyValue any, changeKey string, 
 
 func MatchEmailAndKey(email string, keyValue string, matchKey string) (bool, User) {
 	db := database.Db
+	user := User{}
 	result := db.Where("email = ?", email).First(&user)
 	if result.Error == gorm.ErrRecordNotFound {
 		// 表示未找到匹配的记录
@@ -81,6 +81,7 @@ func MatchEmailAndKey(email string, keyValue string, matchKey string) (bool, Use
 
 func InitUser(email string, password string) {
 	db := database.Db
+	user := User{}
 	db.Where("email = ?", email).First(&user)
 	username := GenerateRandomString(10)
 	db.Model(&user).Updates(User{Username: username, CreatedTime: time.Now(), Password: password, EmailVerify: 1, AvatarURL: getRandomAvatarURL(username)})

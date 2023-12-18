@@ -25,8 +25,10 @@ func getRandomAvatarURL(username string) string {
 	return apiURL + username
 }
 
-func getAuthUser() User {
+func GetAuthUser() User {
 	db := database.Db
-	db.Where("id = ?", jwt.CurrentAuthUserId).First(&AuthUser)
-	return AuthUser
+	println("jwt.CurrentAuthUserId:", jwt.CurrentAuthUserId)
+	user := User{}
+	db.Where("id = ?", jwt.CurrentAuthUserId).First(&user)
+	return user
 }

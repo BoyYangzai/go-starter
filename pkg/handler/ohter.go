@@ -12,7 +12,7 @@ func Submit(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"msg":             "submit success",
-		"currentAuthUser": service.AuthUser,
+		"currentAuthUser": service.GetAuthUser(),
 	})
 
 }
