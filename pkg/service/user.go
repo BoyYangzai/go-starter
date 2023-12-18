@@ -24,7 +24,7 @@ type User struct {
 
 var user User
 
-func UpdateVarifyCode(email string, code string) {
+func UpdateVerifyCode(email string, code string) {
 	db := database.Db
 	result := db.Where("email = ?", email).First(&user)
 	if result.Error == gorm.ErrRecordNotFound {
@@ -57,17 +57,17 @@ func UpdOneKeyWhereAnoKey(whereKey string, whereKeyValue any, changeKey string, 
 	}
 }
 
-func MatchEmailAndKey(email string, keyValue string, matchKey string) bool {
+func MatchEmailAndKey(email string, keyValue string, matchKey string) (bool, User) {
 	db := database.Db
 	result := db.Where("email = ?", email).First(&user)
 	if result.Error == gorm.ErrRecordNotFound {
 		// 表示未找到匹配的记录
 		fmt.Printf("Email '%s' not found in the users table\n", email)
-		return false
+		return false, user
 	} else if result.Error != nil {
 		// 发生其他错误
 		fmt.Println("Query error:", result.Error)
-		return false
+		return false, user
 	}
 	fieldValue, found := getField(&user, matchKey)
 	if found {
@@ -75,9 +75,7 @@ func MatchEmailAndKey(email string, keyValue string, matchKey string) bool {
 	} else {
 		fmt.Printf("未找到字段：%s\n", matchKey)
 	}
-	// 比较 EmailVerifyCode
-	println(fieldValue, 111111)
-	return fieldValue == keyValue
+	return fieldValue == keyValue, user
 }
 
 func InitUser(email string, password string) {

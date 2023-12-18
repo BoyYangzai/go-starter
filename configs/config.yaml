@@ -6,4 +6,7 @@ database:
   port: "3306"
   username: "root"
   password: "08213101" # your password
-  database: "dbname"
+  database: "goApp"
+
+jwt:
+  secret_key: "A_SECRET_KEY"

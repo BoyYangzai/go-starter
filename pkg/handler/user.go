@@ -4,6 +4,7 @@ import (
 	"go-app/pkg/service"
 	"net/http"
 
+	"github.com/BoyYangZai/go-server-lib/pkg/jwt"
 	"github.com/gin-gonic/gin"
 )
 
@@ -44,7 +45,7 @@ func VerifyCode(c *gin.Context) {
 		println("send mail success!")
 	}
 
-	service.UpdateVarifyCode(to, code)
+	service.UpdateVerifyCode(to, code)
 	c.JSON(http.StatusOK, gin.H{
 		"msg": "verifyCode sent",
 	})
@@ -62,8 +63,9 @@ func Registry(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	isMatched := service.MatchEmailAndKey(requestBody.Email, requestBody.VerifyCode, "EmailVerifyCode")
+	isMatched, matchedUser := service.MatchEmailAndKey(requestBody.Email, requestBody.VerifyCode, "EmailVerifyCode")
 	if isMatched {
+		println(matchedUser.ID)
 		service.InitUser(requestBody.Email, requestBody.Password)
 		c.JSON(http.StatusOK, gin.H{
 			"msg": "registry success",
@@ -86,15 +88,8 @@ func Login(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	isMatched, user := service.MatchEmailAndKey(requestBody.Email, requestBody.Password, "Password")
 
-	isMatched := service.MatchEmailAndKey(requestBody.Email, requestBody.Password, "Password")
-	if isMatched {
-		c.JSON(http.StatusOK, gin.H{
-			"msg": "login success",
-		})
-	} else {
-		c.JSON(http.StatusOK, gin.H{
-			"msg": "email and password not match",
-		})
-	}
+	jwt.Auth(c, isMatched,  user.Username)
+
 }
