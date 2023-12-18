@@ -24,7 +24,12 @@ func CreateRouter() *gin.Engine {
 		v2.POST("/submit", handler.Submit)
 		v2.POST("/read", handler.Read)
 	}
-
+	user := router.Group("/user")
+	{
+		user.POST("/verify-code", handler.VerifyCode)
+		user.POST("/registry", handler.Registry)
+		user.POST("/login", handler.Login)
+	}
 	router.Run(":8080")
 
 	return router
