@@ -90,6 +90,6 @@ func Login(c *gin.Context) {
 	}
 	isMatched, user := service.MatchEmailAndKey(requestBody.Email, requestBody.Password, "Password")
 
-	jwt.Auth(c, isMatched,  user.Username)
+	jwt.Auth(c, isMatched, user.Username, user.ID)
 
 }

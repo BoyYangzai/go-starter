@@ -23,6 +23,7 @@ type User struct {
 }
 
 var user User
+var AuthUser User
 
 func UpdateVerifyCode(email string, code string) {
 	db := database.Db
